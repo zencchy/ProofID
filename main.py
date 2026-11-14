@@ -38,7 +38,7 @@ else:
             password=None
         )
     
-    class VerifyRequest(BaseModel):
+    class VeryRequest(BaseModel):
         credential: dict
         signature: str
     class VerificationRequest(BaseModel):
