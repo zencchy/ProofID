@@ -22,11 +22,22 @@ app.add_middleware(
 )
 
 # Load the issuer's private key
-with open("issuer_private.pem", "rb") as file:
+import os
+
+private_key_data = os.getenv("ISSUER_PRIVATE_KEY")
+
+if private_key_data:
     private_key = serialization.load_pem_private_key(
-        file.read(),
+        private_key_data.encode(),
         password=None
     )
+else:
+    with open("issuer_private.pem", "rb") as file:
+        private_key = serialization.load_pem_private_key(
+            file.read(),
+            password=None
+        )
+    
     class VerifyRequest(BaseModel):
         credential: dict
         signature: str
@@ -148,4 +159,61 @@ def decide_verification_request(request_id: str, decision: str):
         "success": True,
         "request": verification_requests[request_id],
         "message": "Request decision updated successfully"
+    }
+
+@app.post("/verification-requests/{request_id}/verify")
+def verify_approved_request(request_id: str, request: VerifyRequest):
+
+    if request_id not in verification_requests:
+        return {
+            "success": False,
+            "message": "Verification request not found"
+        }
+
+    saved_request = verification_requests[request_id]
+
+    if saved_request["status"] != "approved":
+        return {
+            "success": False,
+            "message": "User has not approved this request"
+        }
+
+    credential_bytes = json.dumps(
+        request.credential,
+        sort_keys=True
+    ).encode("utf-8")
+
+    try:
+        signature_bytes = base64.b64decode(
+            request.signature,
+            validate=True
+        )
+
+        public_key.verify(
+            signature_bytes,
+            credential_bytes
+        )
+
+    except (InvalidSignature, ValueError, binascii.Error):
+        return {
+            "success": False,
+            "verified": False,
+            "message": "Credential verification failed"
+        }
+
+    requested_claim = saved_request["requested_claim"]
+
+    if requested_claim not in request.credential:
+        return {
+            "success": False,
+            "message": "Requested claim not found"
+        }
+
+    return {
+        "success": True,
+        "request_id": request_id,
+        "verified": True,
+        "claim": requested_claim,
+        "value": request.credential[requested_claim],
+        "message": "Approved credential successfully verified"
     }
