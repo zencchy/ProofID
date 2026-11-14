@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 from cryptography.hazmat.primitives import serialization
 import json
@@ -6,6 +6,14 @@ import base64
 from pydantic import BaseModel
 from cryptography.exceptions import InvalidSignature
 import binascii
+class VerifyRequest(BaseModel):
+    credential: dict
+    signature: str
+
+
+class VerificationRequest(BaseModel):
+    exchange_name: str
+    requested_claim: str
 
 app = FastAPI(
     title="ProofID API",
@@ -82,7 +90,7 @@ def issue_credential():
         "issuer": "ProofID Test Issuer"
     }
 @app.post("/verify-credential")
-def verify_credential(request: VerifyRequest):
+def verify_credential(request: VerifyRequest = Body(...)):
 
     credential_bytes = json.dumps(
         request.credential,
