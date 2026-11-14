@@ -1,0 +1,839 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProofID | Exchange Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #100F0C;
+            --sidebar: #15130F;
+            --card: #1D1A14;
+            --gold: #A98746;
+            --light-gold: #D2B477;
+            --text: #F4F0E7;
+            --muted: #A9A394;
+            --border: #3D3425;
+            --success: #65C99A;
+            --danger: #E47C72;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 245px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 28px 18px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: var(--light-gold);
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo-subtitle {
+            color: var(--muted);
+            font-size: 11px;
+            padding: 0 12px;
+            letter-spacing: 1px;
+            margin-bottom: 45px;
+        }
+
+        .nav-label {
+            color: #777064;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            padding: 0 12px;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 13px 12px;
+            margin-bottom: 7px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #302719;
+            color: var(--light-gold);
+        }
+
+        .sidebar-bottom {
+            margin-top: 55px;
+            padding: 15px 12px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .connection-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            margin-right: 7px;
+        }
+
+        /* MAIN AREA */
+
+        .main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        header {
+            height: 75px;
+            padding: 0 5%;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .account {
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 9px 14px;
+            font-size: 12px;
+            color: var(--light-gold);
+        }
+
+        .content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 45px 5%;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .eyebrow {
+            color: var(--gold);
+            font-size: 11px;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin: 0 0 12px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-top: 0;
+        }
+
+        .description {
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 650px;
+            font-size: 14px;
+        }
+
+        /* CARDS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 32px;
+        }
+
+        .stat-card,
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 23px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 25px;
+            color: var(--light-gold);
+            font-weight: bold;
+        }
+
+        .card {
+            margin-top: 25px;
+        }
+
+        .card-description {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* FORM */
+
+        label {
+            display: block;
+            color: #D7D0C1;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #100F0C;
+            color: var(--text);
+            font-size: 14px;
+            margin-bottom: 18px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--gold);
+        }
+
+        button.primary {
+            background: var(--gold);
+            color: #17130D;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        button.primary:hover {
+            background: var(--light-gold);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* RESULTS */
+
+        #result {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 9px;
+            line-height: 1.7;
+            font-size: 13px;
+        }
+
+        #result.success {
+            display: block;
+            background: #17251D;
+            border: 1px solid #315D43;
+        }
+
+        #result.failure {
+            display: block;
+            background: #291A18;
+            border: 1px solid #70413B;
+        }
+
+        #result h3 {
+            margin-top: 0;
+            font-size: 17px;
+        }
+
+        #result.success h3 {
+            color: var(--success);
+        }
+
+        #result.failure h3 {
+            color: var(--danger);
+        }
+
+        .demo-note {
+            border-left: 3px solid var(--gold);
+            padding: 12px 15px;
+            background: #211D16;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+            margin-top: 22px;
+        }
+
+        /* ACTIVITY */
+
+        .activity-item {
+            padding: 17px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-status {
+            color: var(--success);
+        }
+
+        .empty-state {
+            color: var(--muted);
+            font-size: 13px;
+            padding: 15px 0;
+        }
+
+        .integration-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 17px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .integration-row:last-child {
+            border-bottom: none;
+        }
+
+        .integration-value {
+            color: var(--light-gold);
+        }
+
+        @media (max-width: 750px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .logo-subtitle {
+                margin-bottom: 20px;
+            }
+
+            .nav-label,
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .nav-item {
+                display: inline-block;
+                width: auto;
+                margin: 3px;
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            header {
+                height: 60px;
+                padding: 0 20px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">ProofID</div>
+        <div class="logo-subtitle">EXCHANGE INFRASTRUCTURE</div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <button class="nav-item active"
+            onclick="showPage('overview', this)">
+            Overview
+        </button>
+
+        <button class="nav-item"
+            onclick="showPage('verification', this)">
+            Verification Centre
+        </button>
+
+        <button class="nav-item"
+            onclick="showPage('activity', this)">
+            Activity History
+        </button>
+
+        <button class="nav-item"
+            onclick="showPage('integration', this)">
+            Integration
+        </button>
+
+        <div class="sidebar-bottom">
+            <span class="connection-dot"></span>
+            Local API connection
+
+            <p>ProofID Exchange Portal<br>Prototype environment</p>
+        </div>
+
+    </aside>
+
+
+    <div class="main">
+
+        <header>
+            <div class="header-title">Exchange Dashboard</div>
+            <div class="account">Exchange Account</div>
+        </header>
+
+
+        <main class="content">
+
+            <!-- OVERVIEW -->
+
+            <section class="page active" id="overview">
+
+                <div class="eyebrow">EXCHANGE WORKSPACE</div>
+
+                <h1>Verification Overview</h1>
+
+                <p class="description">
+                    Verify the authenticity of ProofID credentials
+                    without collecting unnecessary personal identity
+                    information from users.
+                </p>
+
+                <div class="stats">
+
+                    <div class="stat-card">
+                        <div class="stat-label">Verification Checks</div>
+                        <div class="stat-value" id="total-checks">0</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-label">Successful Checks</div>
+                        <div class="stat-value" id="successful-checks">0</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-label">Failed Checks</div>
+                        <div class="stat-value" id="failed-checks">0</div>
+                    </div>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Identity Verification</h2>
+
+                    <p class="card-description">
+                        Use the verification centre to authenticate
+                        a ProofID credential.
+                    </p>
+
+                    <button class="primary"
+                        onclick="showPage('verification')">
+                        Open Verification Centre
+                    </button>
+
+                </div>
+
+                <div class="demo-note">
+                    <strong>Prototype notice:</strong>
+                    This version demonstrates issuer signature
+                    verification. It does not yet implement
+                    zero-knowledge proofs or production exchange
+                    integrations.
+                </div>
+
+            </section>
+
+
+            <!-- VERIFICATION CENTRE -->
+
+            <section class="page" id="verification">
+
+                <div class="eyebrow">CREDENTIAL AUTHENTICATION</div>
+
+                <h1>Verification Centre</h1>
+
+                <p class="description">
+                    Authenticate a credential issued by ProofID.
+                    The current prototype checks whether the
+                    credential's digital signature is valid.
+                </p>
+
+                <div class="card">
+
+                    <h2>KYC Verification Request</h2>
+
+                    <p class="card-description">
+                        Enter a reference to label this verification
+                        attempt, then run the credential check.
+                    </p>
+
+                    <label for="reference">
+                        Verification Reference
+                    </label>
+
+                    <input
+                        type="text"
+                        id="reference"
+                        placeholder="Generated automatically"
+                        readonly
+>
+
+                    <button class="primary" id="verify-button"
+                        onclick="verifyUser()">
+                        Verify Credential
+                    </button>
+
+                    <div id="result"></div>
+
+                    <div class="demo-note">
+                        This demo currently reads the test credential
+                        from the wallet in the same browser.
+                        The reference is a label only; it does not
+                        retrieve another user's credential.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ACTIVITY HISTORY -->
+
+            <section class="page" id="activity">
+
+                <div class="eyebrow">AUDIT OVERVIEW</div>
+
+                <h1>Activity History</h1>
+
+                <p class="description">
+                    Review verification attempts made during
+                    this browser session.
+                </p>
+
+                <div class="card">
+
+                    <h2>Recent Activity</h2>
+
+                    <div id="activity-list">
+                        <div class="empty-state">
+                            No verification activity yet.
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- INTEGRATION -->
+
+            <section class="page" id="integration">
+
+                <div class="eyebrow">DEVELOPER INFORMATION</div>
+
+                <h1>Integration</h1>
+
+                <p class="description">
+                    Technical information about the ProofID
+                    verification service used by this prototype.
+                </p>
+
+                <div class="card">
+
+                    <h2>API Configuration</h2>
+
+                    <div class="integration-row">
+                        <span>API Service</span>
+                        <span class="integration-value">FastAPI</span>
+                    </div>
+
+                    <div class="integration-row">
+                        <span>Verification Endpoint</span>
+                        <span class="integration-value">/verify-credential</span>
+                    </div>
+
+                    <div class="integration-row">
+                        <span>Signature Algorithm</span>
+                        <span class="integration-value">Ed25519</span>
+                    </div>
+
+                    <div class="integration-row">
+                        <span>Credential Type</span>
+                        <span class="integration-value">KYC</span>
+                    </div>
+
+                    <div class="integration-row">
+                        <span>Proof System</span>
+                        <span class="integration-value">Not yet integrated</span>
+                    </div>
+
+                </div>
+
+                <div class="demo-note">
+                    The current integration is a local prototype.
+                    A production deployment will require secure
+                    API authentication, trusted issuer management,
+                    credential status checks and a real holder-to-
+                    verifier proof exchange.
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let totalChecks = 0;
+let successfulChecks = 0;
+let failedChecks = 0;
+
+
+function showPage(pageId, clickedButton) {
+
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    document.getElementById(pageId).classList.add("active");
+
+    document.querySelectorAll(".nav-item").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    if (clickedButton) {
+        clickedButton.classList.add("active");
+    } else {
+        document.querySelectorAll(".nav-item").forEach(button => {
+            if (button.getAttribute("onclick").includes(pageId)) {
+                button.classList.add("active");
+            }
+        });
+    }
+}
+
+
+function updateStats() {
+
+    document.getElementById("total-checks").innerText = totalChecks;
+
+    document.getElementById("successful-checks").innerText =
+        successfulChecks;
+
+    document.getElementById("failed-checks").innerText =
+        failedChecks;
+}
+
+
+function addActivity(reference, status) {
+
+    const activityList = document.getElementById("activity-list");
+
+    const emptyState = activityList.querySelector(".empty-state");
+
+    if (emptyState) {
+        emptyState.remove();
+    }
+
+    const item = document.createElement("div");
+    item.className = "activity-item";
+
+    const details = document.createElement("div");
+    details.innerText = reference;
+
+    const statusText = document.createElement("div");
+    statusText.className = "activity-status";
+
+    statusText.innerText = status;
+
+    item.appendChild(details);
+    item.appendChild(statusText);
+
+    activityList.prepend(item);
+}
+
+
+function generateReference() {
+    const randomPart = crypto.randomUUID()
+        .split("-")[0]
+        .toUpperCase();
+
+    return "REQ-" + Date.now() + "-" + randomPart;
+}
+async function verifyUser() {
+    const result = document.getElementById("result");
+    const button = document.getElementById("verify-button");
+
+    const reference = generateReference();
+    document.getElementById("reference").value = reference;
+
+    result.style.display = "block";
+    result.className = "";
+    result.innerHTML = "Verifying credential...";
+
+    button.disabled = true;
+    totalChecks++;
+    updateStats();
+
+    try {
+        const savedCredential =
+            localStorage.getItem("proofid_credential");
+
+        if (!savedCredential) {
+            throw new Error(
+                "No credential found. Receive a credential in your wallet first."
+            );
+        }
+
+        const data = JSON.parse(savedCredential);
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/verify-credential",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    credential: data.credential,
+                    signature: data.signature
+                })
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Verification server returned an error.");
+        }
+
+        const verification = await response.json();
+
+        if (verification.verified) {
+            successfulChecks++;
+
+            result.className = "success";
+            result.innerHTML = `
+                <h3>KYC Verification Successful</h3>
+                <p>This user has an authentic ProofID credential.</p>
+                <p><strong>Status:</strong> Verified</p>
+                <p><strong>Reference:</strong> ${escapeHTML(reference)}</p>
+            `;
+
+            addActivity(reference, "Verified");
+
+        } else {
+            failedChecks++;
+
+            result.className = "failure";
+            result.innerHTML = `
+                <h3>Verification Failed</h3>
+                <p>The credential could not be authenticated.</p>
+            `;
+
+            addActivity(reference, "Failed");
+        }
+
+    } catch (error) {
+        failedChecks++;
+
+        result.className = "failure";
+        result.innerHTML = `
+            <h3>Verification Error</h3>
+            <p>${escapeHTML(error.message)}</p>
+        `;
+
+        addActivity(reference, "Error");
+
+    } finally {
+        updateStats();
+        button.disabled = false;
+    }
+}
+
+
+function escapeHTML(value) {
+
+    return String(value).replace(/[&<>"']/g, character => {
+        const characters = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        };
+
+        return characters[character];
+    });
+}
+
+</script>
+
+</body>
+</html>

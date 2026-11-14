@@ -1,0 +1,1013 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProofID | Identity Wallet</title>
+
+<style>
+:root {
+    --bg: #100F0C;
+    --panel: #1D1A14;
+    --panel-light: #262117;
+    --gold: #A98746;
+    --gold-light: #D2B477;
+    --muted: #A9A394;
+    --border: #3D3425;
+    --success: #65C99A;
+    --danger: #D97970;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: #F3EFE5;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 245px;
+    background: #15130F;
+    border-right: 1px solid var(--border);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    color: var(--gold-light);
+    font-size: 25px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.logo-subtitle {
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 45px;
+}
+
+.nav-label {
+    color: #766D5B;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    margin: 20px 0 12px;
+}
+
+.nav-item {
+    padding: 13px 14px;
+    color: var(--muted);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: #292319;
+    color: var(--gold-light);
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* MAIN CONTENT */
+
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 30px 5%;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 22px;
+    margin-bottom: 38px;
+}
+
+.topbar small {
+    color: var(--muted);
+}
+
+.profile {
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 10px 15px;
+    color: var(--gold-light);
+    font-size: 12px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+h1 {
+    font-size: 30px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 17px;
+    margin-bottom: 18px;
+}
+
+/* CARDS */
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 23px;
+}
+
+.card-label {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 16px;
+}
+
+.card-value {
+    color: var(--gold-light);
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.card-note {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.credential-card {
+    background: linear-gradient(135deg, #272116, #17140F);
+    border: 1px solid #65502D;
+    border-radius: 16px;
+    padding: 27px;
+    margin-bottom: 28px;
+}
+
+.credential-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.credential-name {
+    font-size: 19px;
+    color: var(--gold-light);
+}
+
+.status {
+    color: var(--success);
+    background: #193025;
+    border-radius: 20px;
+    padding: 8px 12px;
+    font-size: 11px;
+}
+
+.status.pending {
+    color: var(--gold-light);
+    background: #392E1B;
+}
+
+.status.invalid {
+    color: var(--danger);
+    background: #39201E;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 23px;
+}
+
+.detail-label {
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 7px;
+}
+
+.detail-value {
+    font-size: 14px;
+}
+
+/* BUTTONS */
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 23px;
+}
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 13px 18px;
+    font-weight: bold;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: var(--gold);
+    color: #100F0C;
+}
+
+.btn-primary:hover {
+    background: var(--gold-light);
+}
+
+.btn-secondary {
+    background: #292319;
+    color: var(--gold-light);
+    border: 1px solid #65502D;
+}
+
+.btn-secondary:hover {
+    background: #382F20;
+}
+
+.btn-danger {
+    background: #39201E;
+    color: #E7A49D;
+    border: 1px solid #75413A;
+}
+
+.message {
+    margin-top: 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--gold-light);
+    overflow-wrap: anywhere;
+}
+
+.message.success {
+    color: var(--success);
+}
+
+.message.error {
+    color: var(--danger);
+}
+
+.info-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 15px;
+}
+
+.info-card h3 {
+    color: var(--gold-light);
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.info-card p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.empty {
+    color: var(--muted);
+    font-size: 13px;
+    padding: 18px 0;
+}
+
+footer {
+    margin-top: 60px;
+    padding: 20px 0;
+    color: #716A5B;
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+}
+
+@media(max-width: 760px) {
+    .sidebar-bottom,
+    .nav-label {
+        display: none;
+    }
+
+    .logo {
+        margin-bottom: 16px;
+    }
+
+    .sidebar nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 5px;
+    }
+
+    .nav-item {
+        white-space: nowrap;
+        margin: 0;
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .main {
+        padding: 24px 18px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+}
+
+@media(max-width: 420px) {
+    .details {
+        grid-template-columns: 1fr;
+    }
+
+    .credential-top {
+        align-items: flex-start;
+        gap: 12px;
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">ProofID</div>
+        <div class="logo-subtitle">PRIVATE IDENTITY WALLET</div>
+
+        <nav>
+            <div class="nav-label">WORKSPACE</div>
+
+            <div class="nav-item active" onclick="showPage('overview', this)">
+                ◈ Overview
+            </div>
+
+            <div class="nav-item" onclick="showPage('credentials', this)">
+                ▣ My Credentials
+            </div>
+
+            <div class="nav-label">MANAGEMENT</div>
+
+            <div class="nav-item" onclick="showPage('privacy', this)">
+                ◉ Privacy Controls
+            </div>
+            <div class="nav-item" onclick="showPage('requests', this)">
+                ◈ Verification Requests
+            </div>
+
+            <div class="nav-item" onclick="showPage('activity', this)">
+                ◷ Activity
+            </div>
+
+            <div class="nav-item" onclick="showPage('security', this)">
+                ◈ Security
+            </div>
+        </nav>
+
+        <div class="sidebar-bottom">
+            ProofID Wallet<br>
+            Your identity. Your control.
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="topbar">
+            <small>PERSONAL IDENTITY SPACE / WALLET</small>
+            <div class="profile">● Personal Wallet</div>
+        </div>
+
+
+        <!-- OVERVIEW -->
+
+        <section id="overview" class="page active">
+
+            <h1>Your identity. Your control.</h1>
+
+            <p class="subtitle">
+                Manage your verified credentials and control how
+                your identity information is presented to services.
+            </p>
+
+            <div class="card-grid">
+
+                <div class="card">
+                    <div class="card-label">WALLET STATUS</div>
+                    <div class="card-value">Active</div>
+                    <div class="card-note">ProofID wallet is available</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">CREDENTIAL STATUS</div>
+                    <div class="card-value" id="overview-status">Not issued</div>
+                    <div class="card-note">Your KYC credential status</div>
+                </div>
+
+            </div>
+
+            <h2 class="section-title">Your identity credential</h2>
+
+            <div class="credential-card">
+
+                <div class="credential-top">
+                    <div class="credential-name">KYC Credential</div>
+                    <span class="status pending" id="credential-status">
+                        Awaiting credential
+                    </span>
+                </div>
+
+                <div class="details">
+
+                    <div>
+                        <div class="detail-label">CREDENTIAL TYPE</div>
+                        <div class="detail-value" id="credential-type">KYC Verification</div>
+                    </div>
+
+                    <div>
+                        <div class="detail-label">COUNTRY</div>
+                        <div class="detail-value" id="credential-country">Not available</div>
+                    </div>
+
+                    <div>
+                        <div class="detail-label">ASSURANCE LEVEL</div>
+                        <div class="detail-value" id="credential-assurance">Not available</div>
+                    </div>
+
+                    <div>
+                        <div class="detail-label">ISSUER</div>
+                        <div class="detail-value" id="credential-issuer">Not available</div>
+                    </div>
+
+                </div>
+
+                <div class="actions">
+
+                    <button class="btn btn-primary" onclick="getCredential()">
+                        Receive Credential
+                    </button>
+
+                    <button class="btn btn-secondary" onclick="verifyCredential()">
+                        Verify Credential
+                    </button>
+
+                    <button class="btn btn-danger" onclick="removeCredential()">
+                        Remove Credential
+                    </button>
+
+                </div>
+
+                <p id="message" class="message"></p>
+                <p id="verification-message" class="message"></p>
+
+            </div>
+
+            <div class="info-card">
+                <h3>Privacy by design</h3>
+                <p>
+                    ProofID is designed to help users prove specific
+                    identity claims without unnecessarily exposing
+                    their personal information.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- CREDENTIALS -->
+
+        <section id="credentials" class="page">
+
+            <h1>My Credentials</h1>
+
+            <p class="subtitle">
+                View and manage the credentials issued to your wallet.
+            </p>
+
+            <div class="credential-card">
+                <div class="credential-name">KYC Verification Credential</div>
+                <p class="message" id="credential-page-status">
+                    No credential has been received yet.
+                </p>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="getCredential()">
+                        Receive Credential
+                    </button>
+                    <button class="btn btn-secondary" onclick="verifyCredential()">
+                        Verify Credential
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- PRIVACY -->
+
+        <section id="privacy" class="page">
+
+            <h1>Privacy Controls</h1>
+
+            <p class="subtitle">
+                Understand and manage how your credentials are used.
+            </p>
+
+            <div class="info-card">
+                <h3>Selective disclosure</h3>
+                <p>
+                    Future ProofID functionality will allow you to
+                    disclose only the claims required by a verifier,
+                    rather than your complete identity information.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>User approval</h3>
+                <p>
+                    Our planned verification-request workflow will
+                    ask for your approval before sharing a proof
+                    with an exchange.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Credential storage</h3>
+                <p>
+                    This prototype currently stores your test
+                    credential in browser local storage. Encrypted
+                    wallet storage is a planned upgrade.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- VERIFICATION REQUESTS -->
+
+<section id="requests" class="page">
+
+    <h1>Verification Requests</h1>
+
+    <p class="subtitle">
+        Review requests from exchanges before approving access
+        to your KYC verification status.
+    </p>
+
+    <div class="info-card">
+        <h3>Incoming requests</h3>
+
+        <div id="verification-requests-list" class="empty">
+            Loading verification requests...
+        </div>
+    </div>
+
+</section>
+        <!-- ACTIVITY -->
+
+        <section id="activity" class="page">
+
+            <h1>Wallet Activity</h1>
+
+            <p class="subtitle">
+                A record of actions performed during this wallet session.
+            </p>
+
+            <div class="info-card">
+                <h3>Recent activity</h3>
+                <div id="activity-list" class="empty">
+                    No activity recorded yet.
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- SECURITY -->
+
+        <section id="security" class="page">
+
+            <h1>Security Centre</h1>
+
+            <p class="subtitle">
+                Information about how this ProofID prototype
+                protects your credentials.
+            </p>
+
+            <div class="info-card">
+                <h3>Issuer signature verification</h3>
+                <p>
+                    Credentials are digitally signed by the issuer.
+                    The backend checks the signature to detect
+                    unauthorised changes.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Private key protection</h3>
+                <p>
+                    The issuer's private signing key is stored
+                    on the backend in this prototype. It should
+                    be secured separately in production.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Wallet encryption</h3>
+                <p>
+                    Password-protected credential encryption
+                    has not yet been implemented.
+                </p>
+            </div>
+
+        </section>
+
+
+        <footer>
+            ProofID © 2026 — Verify once. Prove everywhere.
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+
+// NAVIGATION
+function showPage(pageId, element) {
+
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    document.querySelectorAll(".nav-item").forEach(item => {
+        item.classList.remove("active");
+    });
+
+    document.getElementById(pageId).classList.add("active");
+
+    element.classList.add("active");
+
+    if (pageId === "requests") {
+        loadVerificationRequests();
+    }
+}
+
+// ACTIVITY
+
+function addActivity(action) {
+
+    const activityList = document.getElementById("activity-list");
+
+    const entry = document.createElement("p");
+
+    entry.style.marginBottom = "12px";
+    entry.style.color = "#D2B477";
+
+    entry.textContent = new Date().toLocaleString() + " — " + action;
+
+    if (activityList.classList.contains("empty")) {
+        activityList.innerHTML = "";
+        activityList.classList.remove("empty");
+    }
+
+    activityList.prepend(entry);
+}
+
+
+// DISPLAY CREDENTIAL
+
+function displayCredential(data) {
+
+    const credential = data.credential;
+
+    document.getElementById("credential-type").innerText =
+        credential.credential_type;
+
+    document.getElementById("credential-country").innerText =
+        credential.country;
+
+    document.getElementById("credential-assurance").innerText =
+        credential.assurance_level;
+
+    document.getElementById("credential-issuer").innerText =
+        data.issuer;
+
+    document.getElementById("credential-status").innerText =
+        credential.kyc_verified ? "● Verified" : "● Not verified";
+
+    document.getElementById("credential-status").className =
+        credential.kyc_verified ? "status" : "status invalid";
+
+    document.getElementById("overview-status").innerText =
+        credential.kyc_verified ? "Verified" : "Not verified";
+
+    document.getElementById("credential-page-status").innerText =
+        "KYC credential received from " + data.issuer;
+}
+
+
+// RECEIVE CREDENTIAL
+
+async function getCredential() {
+
+    const message = document.getElementById("message");
+
+    message.innerText = "Requesting credential...";
+    message.className = "message";
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:8000/issue-credential", {
+            method: "POST"
+        });
+
+        if (!response.ok) {
+            throw new Error("Credential request failed");
+        }
+
+        const data = await response.json();
+
+        localStorage.setItem(
+            "proofid_credential",
+            JSON.stringify(data)
+        );
+
+        displayCredential(data);
+
+        message.innerText = "Credential received and saved successfully!";
+        message.className = "message success";
+
+        addActivity("KYC credential received");
+
+    } catch (error) {
+
+        message.innerText = "ERROR: " + error.message;
+        message.className = "message error";
+
+        console.error(error);
+    }
+}
+
+
+// VERIFY CREDENTIAL
+
+async function verifyCredential() {
+
+    const message = document.getElementById("verification-message");
+
+    message.innerText = "Verifying credential...";
+    message.className = "message";
+
+    try {
+
+        const savedCredential = localStorage.getItem("proofid_credential");
+
+        if (!savedCredential) {
+            throw new Error("No credential found. Receive one first.");
+        }
+
+        const data = JSON.parse(savedCredential);
+
+        const response = await fetch("http://127.0.0.1:8000/verify-credential", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                credential: data.credential,
+                signature: data.signature
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Verification request failed");
+        }
+
+        const result = await response.json();
+
+        if (result.verified) {
+
+            message.innerText = "SUCCESS: Your credential is authentic!";
+            message.className = "message success";
+
+            addActivity("Credential signature successfully verified");
+
+        } else {
+
+            message.innerText = "FAILED: Credential authenticity could not be confirmed.";
+            message.className = "message error";
+
+        }
+
+    } catch (error) {
+
+        message.innerText = "ERROR: " + error.message;
+        message.className = "message error";
+
+        console.error(error);
+    }
+}
+
+
+// REMOVE CREDENTIAL FROM THIS BROWSER
+
+function removeCredential() {
+
+    const confirmed = confirm(
+        "Remove your ProofID credential from this browser?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    localStorage.removeItem("proofid_credential");
+
+    document.getElementById("credential-type").innerText = "KYC Verification";
+    document.getElementById("credential-country").innerText = "Not available";
+    document.getElementById("credential-assurance").innerText = "Not available";
+    document.getElementById("credential-issuer").innerText = "Not available";
+
+    document.getElementById("credential-status").innerText = "Awaiting credential";
+    document.getElementById("credential-status").className = "status pending";
+
+    document.getElementById("overview-status").innerText = "Not issued";
+    document.getElementById("credential-page-status").innerText =
+        "No credential has been received yet.";
+
+    document.getElementById("message").innerText =
+        "Credential removed from this browser.";
+
+    document.getElementById("verification-message").innerText = "";
+
+    addActivity("Credential removed from this browser");
+}
+
+
+// RESTORE CREDENTIAL DISPLAY WHEN PAGE OPENS
+
+window.addEventListener("DOMContentLoaded", function() {
+
+    const savedCredential = localStorage.getItem("proofid_credential");
+
+    if (savedCredential) {
+
+        try {
+
+            const data = JSON.parse(savedCredential);
+
+            displayCredential(data);
+
+        } catch (error) {
+
+            console.error("Could not restore saved credential:", error);
+
+        }
+    }
+
+});
+
+async function loadVerificationRequests() {
+
+    const container = document.getElementById("verification-requests-list");
+
+    container.innerHTML = "Loading requests...";
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/verification-requests");
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error("Could not retrieve requests.");
+        }
+
+        if (data.requests.length === 0) {
+            container.innerHTML = "No verification requests yet.";
+            return;
+        }
+
+        container.innerHTML = data.requests.map(request => `
+            <div class="info-card">
+                <h3>${escapeHTML(request.exchange)}</h3>
+                <p>Requested claim: ${escapeHTML(request.requested_claim)}</p>
+                <p>Request ID: ${escapeHTML(request.request_id)}</p>
+                <p>Status: <strong>${escapeHTML(request.status)}</strong></p>
+
+                ${request.status === "pending" ? `
+                    <div class="actions">
+                        <button class="btn btn-primary"
+                            onclick="decideRequest('${escapeHTML(request.request_id)}', 'approved')">
+                            Approve
+                        </button>
+
+                        <button class="btn btn-danger"
+                            onclick="decideRequest('${escapeHTML(request.request_id)}', 'rejected')">
+                            Reject
+                        </button>
+                    </div>
+                ` : ""}
+            </div>
+        `).join("");
+
+    } catch (error) {
+        container.innerHTML = error.message;
+    }
+}
+
+async function decideRequest(requestId, decision) {
+
+    try {
+        const response = await fetch(
+            `http://127.0.0.1:8000/verification-requests/${encodeURIComponent(requestId)}/decision?decision=${decision}`,
+            { method: "POST" }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || "Could not update request.");
+        }
+
+        alert("Request " + decision + " successfully!");
+
+        loadVerificationRequests();
+
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[character]);
+}
+</script>
+
+</body>
+</html>
