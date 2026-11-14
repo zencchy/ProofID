@@ -778,7 +778,7 @@ async function getCredential() {
 
     try {
 
-        const response = await fetch("http://127.0.0.1:8000/issue-credential", {
+        const response = await fetch("https://proofid.onrender.com/issue-credential", {
             method: "POST"
         });
 
@@ -829,7 +829,7 @@ async function verifyCredential() {
 
         const data = JSON.parse(savedCredential);
 
-        const response = await fetch("http://127.0.0.1:8000/verify-credential", {
+        const response = await fetch("https://proofid.onrender.com/verify-credential", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -935,7 +935,7 @@ async function loadVerificationRequests() {
     container.innerHTML = "Loading requests...";
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/verification-requests");
+        const response = await fetch("https://proofid.onrender.com/verification-requests");
         const data = await response.json();
 
         if (!response.ok) {
@@ -979,7 +979,7 @@ async function decideRequest(requestId, decision) {
 
     try {
         const response = await fetch(
-            `http://127.0.0.1:8000/verification-requests/${encodeURIComponent(requestId)}/decision?decision=${decision}`,
+            `https://proofid.onrender.com/verification-requests/${encodeURIComponent(requestId)}/decision?decision=${decision}`,
             { method: "POST" }
         );
 
