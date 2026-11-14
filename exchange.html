@@ -795,6 +795,28 @@ async function loadVerificationRequests() {
             const status = document.createElement("div");
             status.className = "activity-status";
             status.innerText = request.status;
+            const actions = document.createElement("div");
+
+if (request.status === "pending") {
+    const acceptButton = document.createElement("button");
+    acceptButton.innerText = "Accept";
+    acceptButton.className = "primary";
+
+    acceptButton.onclick = () =>
+        decideRequest(request.request_id, "approved");
+
+    const rejectButton = document.createElement("button");
+    rejectButton.innerText = "Reject";
+    rejectButton.className = "secondary";
+
+    rejectButton.onclick = () =>
+        decideRequest(request.request_id, "rejected");
+
+    actions.appendChild(acceptButton);
+    actions.appendChild(rejectButton);
+}
+
+item.appendChild(actions);
 
             item.appendChild(details);
             item.appendChild(status);
@@ -809,6 +831,33 @@ async function loadVerificationRequests() {
                 ${escapeHTML(error.message)}
             </div>
         `;
+    }
+}
+async function decideRequest(requestId, decision) {
+    try {
+        const response = await fetch(
+            `https://proofid.onrender.com/verification-requests/${encodeURIComponent(requestId)}/decision?decision=${decision}`,
+            {
+                method: "POST"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Could not update request.");
+        }
+
+        alert(
+            decision === "approved"
+                ? "Verification request accepted!"
+                : "Verification request rejected!"
+        );
+
+        loadVerificationRequests();
+
+    } catch (error) {
+        alert(error.message);
     }
 }
 async function verifyUser() {
